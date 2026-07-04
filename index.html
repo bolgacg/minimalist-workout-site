@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Minimalist Workout — Private. Offline. Yours.</title>
+<meta name="description" content="A fast, quiet gym log that keeps every set on your phone — no account, no cloud. Free on iPhone." />
+<meta name="theme-color" content="#0a0a0a" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Minimalist Workout" />
+<meta property="og:description" content="A fast, quiet gym log that keeps every set on your phone — no account, no cloud." />
+<meta property="og:image" content="img/card-pr.png" />
+
+<!-- DM Sans, embedded base64 @font-face (400/500/700/900), no CDN -->
+<link rel="stylesheet" href="fonts.css" />
+
+<style>
+  :root{
+    --ink:      #0a0a0a;   /* ground */
+    --ink-2:    #101010;   /* raised */
+    --line:     rgba(244,242,236,0.09);
+    --line-2:   rgba(244,242,236,0.16);
+    --white:    #f4f2ec;   /* warm off-white — never pure white */
+    --body:     #9a978e;   /* warm grey body */
+    --faint:    #63615a;   /* captions */
+    --green:    #22c55e;   /* the one accent */
+    --green-dim:#1f9d4d;
+    --shell:    min(1180px, 92vw);
+    --font: 'DM Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--body);
+    font-family:var(--font);
+    font-weight:400;
+    line-height:1.55;
+    letter-spacing:0.005em;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  img{ max-width:100%; display:block; }
+  a{ color:inherit; text-decoration:none; }
+
+  ::selection{ background:var(--green); color:#04140a; }
+  :focus-visible{ outline:2px solid var(--green); outline-offset:3px; border-radius:2px; }
+
+  .shell{ width:var(--shell); margin-inline:auto; }
+
+  /* ---- shared type ---- */
+  .eyebrow{
+    font-size:0.72rem;
+    font-weight:700;
+    letter-spacing:0.24em;
+    text-transform:uppercase;
+    color:var(--green);
+    display:inline-block;
+  }
+  .eyebrow .sep{ color:var(--faint); font-weight:500; }
+
+  /* ---- wordmark ---- */
+  .mark{
+    line-height:0.86;
+    letter-spacing:-0.03em;
+    text-transform:lowercase;
+  }
+  .mark .thin{  display:block; font-weight:400; color:var(--body); }
+  .mark .heavy{ display:block; font-weight:900; color:var(--white); }
+  .dot{ color:var(--green); }
+
+  /* ================= HERO ================= */
+  .hero{
+    padding-top:clamp(2.4rem, 6vw, 4.5rem);
+    padding-bottom:clamp(3rem, 8vw, 6rem);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-bottom:clamp(2.6rem, 8vw, 5rem);
+  }
+  .nav .mark{ font-size:1.05rem; }
+  .nav .nav-tag{
+    font-size:0.7rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase;
+    color:var(--faint);
+  }
+
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.05fr 0.95fr;
+    gap:clamp(2rem, 5vw, 4.5rem);
+    align-items:center;
+  }
+
+  .hero-lead .mark{
+    font-size:clamp(3.4rem, 11vw, 6.6rem);
+    margin:0.35em 0 0.5em;
+  }
+  .kicker{
+    font-size:clamp(1.35rem, 3.4vw, 1.9rem);
+    font-weight:700;
+    color:var(--white);
+    letter-spacing:-0.02em;
+    line-height:1.1;
+    margin:0 0 0.7rem;
+  }
+  .kicker .g{ color:var(--green); }
+  .lede{
+    font-size:clamp(1rem, 1.6vw, 1.12rem);
+    color:var(--body);
+    max-width:30ch;
+    margin:0 0 2rem;
+  }
+
+  /* App Store button */
+  .cta-row{ display:flex; align-items:center; gap:1.1rem; flex-wrap:wrap; }
+  .appstore{
+    display:inline-flex; align-items:center; gap:0.7rem;
+    background:var(--white); color:#0a0a0a;
+    padding:0.85rem 1.5rem 0.85rem 1.25rem;
+    border-radius:999px;
+    font-weight:700; letter-spacing:-0.01em;
+    transition:transform .18s ease, background .18s ease;
+    will-change:transform;
+  }
+  .appstore svg{ width:22px; height:22px; flex:none; }
+  .appstore .sm{ display:block; font-size:0.62rem; font-weight:500; letter-spacing:0.04em; opacity:0.62; line-height:1; margin-bottom:2px; text-transform:uppercase; }
+  .appstore .lg{ display:block; font-size:1.02rem; line-height:1; }
+  .appstore:hover{ transform:translateY(-2px); }
+  .cta-note{ font-size:0.8rem; color:var(--faint); letter-spacing:0.02em; }
+
+  /* hero visual — the route card */
+  .hero-visual{
+    position:relative;
+    border-radius:26px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    box-shadow:0 40px 80px -40px rgba(0,0,0,0.9);
+    aspect-ratio:9/16;
+    background:#080808;
+  }
+  .hero-visual img{ width:100%; height:100%; object-fit:cover; }
+
+  /* ================= VALUE PROPS ================= */
+  .props{
+    border-top:1px solid var(--line);
+    padding-block:clamp(3.5rem, 8vw, 6rem);
+  }
+  .section-head{ margin-bottom:clamp(2.4rem, 5vw, 3.5rem); }
+  .section-head h2{
+    font-size:clamp(1.7rem, 4.5vw, 2.6rem);
+    font-weight:900; color:var(--white);
+    letter-spacing:-0.03em; line-height:1.02;
+    margin:0.5rem 0 0; max-width:20ch;
+  }
+
+  .prop-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:18px;
+    overflow:hidden;
+  }
+  .prop{
+    background:var(--ink);
+    padding:clamp(1.6rem, 2.2vw, 2.1rem);
+    display:flex; flex-direction:column;
+    min-height:230px;
+  }
+  .prop .num{
+    font-size:0.7rem; font-weight:700; letter-spacing:0.22em; text-transform:uppercase;
+    color:var(--green); margin-bottom:auto;
+  }
+  .prop h3{
+    font-size:1.32rem; font-weight:900; color:var(--white);
+    letter-spacing:-0.02em; line-height:1.05;
+    margin:1.6rem 0 0.6rem;
+  }
+  .prop p{ font-size:0.92rem; color:var(--body); margin:0; }
+
+  /* ================= GALLERY ================= */
+  .gallery{
+    border-top:1px solid var(--line);
+    padding-block:clamp(3.5rem, 8vw, 6rem);
+  }
+  .gallery-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:clamp(1.5rem, 4vw, 3rem);
+    align-items:start;
+  }
+  figure{ margin:0; }
+  figcaption{
+    margin-top:1.1rem;
+    font-size:0.82rem; color:var(--faint);
+    letter-spacing:0.02em;
+  }
+  figcaption b{ color:var(--body); font-weight:600; }
+
+  /* phone frame for the live app screen */
+  .phone{
+    padding:9px;
+    background:#050505;
+    border:1px solid var(--line-2);
+    border-radius:38px;
+    box-shadow:0 40px 80px -50px rgba(0,0,0,0.95);
+    max-width:330px;
+    margin-inline:auto;
+  }
+  .phone .screen{
+    border-radius:30px; overflow:hidden; position:relative;
+    background:#fff;
+    aspect-ratio:9/16;               /* crop the empty white tail of the shot */
+  }
+  .phone .screen img{
+    width:100%; height:100%;
+    object-fit:cover; object-position:top center;
+  }
+  .phone .screen::after{           /* soft fade where the shot is cropped */
+    content:""; position:absolute; left:0; right:0; bottom:0; height:14%;
+    background:linear-gradient(to top, rgba(255,255,255,0.9), rgba(255,255,255,0));
+    pointer-events:none;
+  }
+
+  /* plain share-card frame */
+  .card{
+    border-radius:24px; overflow:hidden;
+    border:1px solid var(--line);
+    background:#080808;
+    max-width:330px; margin-inline:auto;
+    aspect-ratio:9/16;
+  }
+  .card img{ width:100%; height:100%; object-fit:cover; }
+
+  /* ================= FOOTER ================= */
+  footer{
+    border-top:1px solid var(--line);
+    padding-block:clamp(3rem, 6vw, 4.5rem) 3rem;
+  }
+  .foot-grid{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    gap:2rem; flex-wrap:wrap;
+  }
+  footer .mark{ font-size:1.35rem; }
+  .foot-cta{ margin-top:1.4rem; }
+  .foot-links{
+    display:flex; flex-direction:column; gap:0.7rem;
+    font-size:0.92rem;
+  }
+  .foot-links a, .foot-links span{ color:var(--body); }
+  .foot-links a:hover{ color:var(--white); }
+  .foot-links .lab{ font-size:0.68rem; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:var(--faint); margin-bottom:0.3rem; }
+  .copy{
+    margin-top:3rem; font-size:0.78rem; color:var(--faint);
+    display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+  }
+
+  /* ================= reveal motion ================= */
+  .rise{ opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+  .rise.in{ opacity:1; transform:none; }
+  @media (prefers-reduced-motion:reduce){
+    .rise{ opacity:1; transform:none; transition:none; }
+    .appstore, .appstore:hover{ transition:none; transform:none; }
+  }
+
+  /* ================= responsive ================= */
+  @media (max-width:900px){
+    .hero-grid{ grid-template-columns:1fr; gap:2.8rem; }
+    .hero-visual{ max-width:360px; margin-inline:auto; width:100%; }
+    .prop-grid{ grid-template-columns:1fr 1fr; }
+    .prop{ min-height:200px; }
+  }
+  @media (max-width:560px){
+    .prop-grid{ grid-template-columns:1fr; }
+    .prop{ min-height:0; }
+    .gallery-grid{ grid-template-columns:1fr; gap:3rem; }
+    .nav .nav-tag{ display:none; }
+    .lede{ max-width:36ch; }
+    .foot-grid{ gap:2.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<main class="hero shell" role="main">
+  <nav class="nav rise">
+    <div class="mark" aria-label="Minimalist Workout">
+      <span class="thin">minimalist</span>
+      <span class="heavy">workout<span class="dot">.</span></span>
+    </div>
+    <div class="nav-tag">iOS · Free</div>
+  </nav>
+
+  <div class="hero-grid">
+    <div class="hero-lead">
+      <span class="eyebrow rise">Gym log &amp; run tracker</span>
+      <h1 class="mark rise" aria-label="Minimalist Workout" style="transition-delay:.05s">
+        <span class="thin">minimalist</span>
+        <span class="heavy">workout<span class="dot">.</span></span>
+      </h1>
+      <p class="kicker rise" style="transition-delay:.1s">Private. Offline. <span class="g">Yours.</span></p>
+      <p class="lede rise" style="transition-delay:.14s">A fast, quiet gym log that keeps every set on your phone — no account, no cloud.</p>
+      <div class="cta-row rise" style="transition-delay:.18s">
+        <a class="appstore" href="https://apps.apple.com/app/id6781074097" aria-label="Download on the App Store">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 12.04c-.03-2.53 2.07-3.74 2.16-3.8-1.18-1.72-3.02-1.96-3.67-1.98-1.56-.16-3.04.92-3.83.92-.79 0-1.68-.9-2.77-.88-1.43.02-2.74.83-3.48 2.11-1.48 2.57-.38 6.38 1.06 8.47.7 1.02 1.54 2.17 2.64 2.13 1.06-.04 1.46-.68 2.74-.68 1.28 0 1.64.68 2.76.66 1.14-.02 1.86-1.04 2.56-2.07.8-1.18 1.13-2.32 1.15-2.38-.03-.01-2.2-.85-2.22-3.35zM14.9 4.6c.58-.71.98-1.7.87-2.68-.84.03-1.86.56-2.47 1.27-.54.62-1.02 1.62-.89 2.58.94.07 1.9-.47 2.49-1.17z"/></svg>
+          <span><span class="sm">Download on the</span><span class="lg">App Store</span></span>
+        </a>
+        <span class="cta-note">Free · iPhone · No sign-up</span>
+      </div>
+    </div>
+
+    <div class="hero-visual rise" style="transition-delay:.12s">
+      <img src="img/card-route.png" alt="A run traced in green over a dark map — 6.21 km recorded by GPS." width="2160" height="3840" fetchpriority="high" />
+    </div>
+  </div>
+</main>
+
+<section class="props shell" aria-labelledby="why">
+  <div class="section-head rise">
+    <span class="eyebrow">Built to disappear</span>
+    <h2 id="why">Everything you need. Nothing asking for your attention.</h2>
+  </div>
+  <div class="prop-grid">
+    <div class="prop rise">
+      <span class="num">Log</span>
+      <h3>Two taps per set</h3>
+      <p>Reps and weight go in fast. The keypad's already up and last time's numbers are already filled.</p>
+    </div>
+    <div class="prop rise" style="transition-delay:.06s">
+      <span class="num">Private</span>
+      <h3>It stays on your phone</h3>
+      <p>No account, no cloud, no tracking. Your training is a local file that never leaves the device.</p>
+    </div>
+    <div class="prop rise" style="transition-delay:.12s">
+      <span class="num">Progress</span>
+      <h3>Watch the numbers climb</h3>
+      <p>Every set is weighed against last time, and a personal record surfaces the moment you hit it.</p>
+    </div>
+    <div class="prop rise" style="transition-delay:.18s">
+      <span class="num">Share</span>
+      <h3>Cards worth posting</h3>
+      <p>Turn a PR or a run into a clean card for your story — the same restraint, ready to send.</p>
+    </div>
+  </div>
+</section>
+
+<section class="gallery shell" aria-labelledby="look">
+  <div class="section-head rise">
+    <span class="eyebrow">A look inside</span>
+    <h2 id="look">Quiet on the surface, exact underneath.</h2>
+  </div>
+  <div class="gallery-grid">
+    <figure class="rise">
+      <div class="phone">
+        <div class="screen">
+          <img src="img/app-active.png" alt="The logging screen: a Plank exercise with a set table showing time per set and what's up next." width="1290" height="2796" loading="lazy" />
+        </div>
+      </div>
+      <figcaption><b>One exercise at a time.</b> Sets, timing, and what's next — nothing else on screen.</figcaption>
+    </figure>
+    <figure class="rise" style="transition-delay:.08s">
+      <div class="card">
+        <img src="img/card-pr.png" alt="A share card reading New PR, Glute Extension, 52.5 kg, up 5 kg versus last." width="1080" height="1920" loading="lazy" />
+      </div>
+      <figcaption><b>A new PR, ready to share.</b> Big number, one green line, straight to your story.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<footer class="shell">
+  <div class="foot-grid">
+    <div>
+      <div class="mark" aria-label="Minimalist Workout">
+        <span class="thin">minimalist</span>
+        <span class="heavy">workout<span class="dot">.</span></span>
+      </div>
+      <div class="foot-cta">
+        <a class="appstore" href="https://apps.apple.com/app/id6781074097" aria-label="Download on the App Store">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 12.04c-.03-2.53 2.07-3.74 2.16-3.8-1.18-1.72-3.02-1.96-3.67-1.98-1.56-.16-3.04.92-3.83.92-.79 0-1.68-.9-2.77-.88-1.43.02-2.74.83-3.48 2.11-1.48 2.57-.38 6.38 1.06 8.47.7 1.02 1.54 2.17 2.64 2.13 1.06-.04 1.46-.68 2.74-.68 1.28 0 1.64.68 2.76.66 1.14-.02 1.86-1.04 2.56-2.07.8-1.18 1.13-2.32 1.15-2.38-.03-.01-2.2-.85-2.22-3.35zM14.9 4.6c.58-.71.98-1.7.87-2.68-.84.03-1.86.56-2.47 1.27-.54.62-1.02 1.62-.89 2.58.94.07 1.9-.47 2.49-1.17z"/></svg>
+          <span><span class="sm">Download on the</span><span class="lg">App Store</span></span>
+        </a>
+      </div>
+    </div>
+
+    <div class="foot-links">
+      <span class="lab">Legal &amp; help</span>
+      <a href="https://bolgacg.github.io/minimalist-workout-legal/privacy.html">Privacy</a>
+      <a href="https://bolgacg.github.io/minimalist-workout-legal/support.html">Support</a>
+      <a href="mailto:minimalistworkoutapp@gmail.com">minimalistworkoutapp@gmail.com</a>
+    </div>
+  </div>
+
+  <div class="copy">
+    <span>© 2026 Bolgac Gulen</span>
+    <span>Made for people who just want to lift and leave.</span>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.rise');
+    if(!('IntersectionObserver' in window)){
+      els.forEach(function(e){ e.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+      });
+    }, { threshold:0.12, rootMargin:'0px 0px -8% 0px' });
+    els.forEach(function(e){ io.observe(e); });
+  })();
+</script>
+</body>
+</html>
