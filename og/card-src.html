@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<!-- Source for img/card-link.png, the 1200x630 link-preview card.
+     Render: chromium screenshot at viewport 1200x630. -->
+<link rel="stylesheet" href="../fonts.css" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; }
+  body {
+    background: #0a0a0a;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 104px;
+    position: relative;
+  }
+  .mark { line-height: 0.86; letter-spacing: -0.02em; }
+  .mark .top { font-weight: 400; font-size: 128px; color: #9a978e; }
+  .mark .bottom { font-weight: 900; font-size: 128px; color: #f4f2ec; }
+  .mark .dot { color: #22c55e; }
+  .tag {
+    margin-top: 44px;
+    font-weight: 400;
+    font-size: 31px;
+    color: #9a978e;
+    letter-spacing: 0.01em;
+  }
+  .foot {
+    position: absolute;
+    left: 104px;
+    bottom: 56px;
+    font-weight: 700;
+    font-size: 19px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #63615a;
+  }
+  .rule {
+    position: absolute;
+    left: 104px;
+    right: 104px;
+    bottom: 104px;
+    height: 1px;
+    background: rgba(244,242,236,0.12);
+  }
+</style>
+</head>
+<body>
+  <div class="mark">
+    <div class="top">minimalist</div>
+    <div class="bottom">workout<span class="dot">.</span></div>
+  </div>
+  <div class="tag">A fast, quiet gym log. No account, no cloud.</div>
+  <div class="rule"></div>
+  <div class="foot">Free on iPhone</div>
+</body>
+</html>
