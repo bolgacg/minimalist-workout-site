@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<!-- Mark that scripting is available. The scroll-reveal hidden-state is scoped
+     to html.js, so with JS off every section paints visible and static. Runs in
+     head, before the body paints, so there is no flash of hidden content. -->
+<script>document.documentElement.classList.add('js');</script>
 <title>Minimalist Workout. Private. Offline. Yours.</title>
 <meta name="description" content="A fast, quiet gym log that keeps every set on your phone. No account, no cloud. Free on iPhone." />
 <meta name="theme-color" content="#0a0a0a" />
@@ -265,11 +270,49 @@
     display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap;
   }
 
-  /* ================= reveal motion ================= */
-  .rise{ opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
-  .rise.in{ opacity:1; transform:none; }
-  @media (prefers-reduced-motion:reduce){
-    .rise{ opacity:1; transform:none; transition:none; }
+  /* ================= motion ================= */
+  /* Everything here is gated behind prefers-reduced-motion: no-preference, and
+     the reveal hidden-state additionally requires html.js, so with reduced
+     motion or with scripting off the page paints fully visible and static.
+     Only opacity, transform and translate animate, so nothing forces layout. */
+  @media (prefers-reduced-motion: no-preference){
+    html{ scroll-behavior:smooth; }
+
+    /* scroll reveal: fade and rise once, honouring the inline stagger delays */
+    html.js .rise{
+      opacity:0;
+      transform:translateY(14px);
+      transition:opacity .55s ease, transform .6s cubic-bezier(.16,.68,.3,1);
+    }
+    html.js .rise.in{ opacity:1; transform:none; }
+
+    /* idle levitation on the phone-format frames. Uses the individual translate
+       property (not transform) so it never fights the reveal transform or the
+       hover lift, and the three are desynced so they never bob in unison. */
+    @keyframes float{ 0%,100%{ translate:0 0; } 50%{ translate:0 -7px; } }
+    .hero-visual{ animation:float 9s ease-in-out .4s infinite; }
+    .phone{ animation:float 8s ease-in-out infinite; }
+    .card{ animation:float 8.5s ease-in-out 1.1s infinite; }
+
+    /* the wordmark's green dot settles in once on load, just after the mark
+       rises. Runs a single time, never loops. */
+    @keyframes dot-settle{ from{ transform:scale(0); opacity:0; } 60%{ opacity:1; } to{ transform:scale(1); } }
+    .nav .dot, .hero-lead .dot{
+      display:inline-block; transform-origin:center;
+      animation:dot-settle .6s cubic-bezier(.2,.7,.2,1) .5s both;
+    }
+
+    /* restrained hover: the visual cards lift a few px, prop tiles raise a shade */
+    .phone, .card{ transition:transform .16s ease, box-shadow .16s ease; }
+    .phone:hover, .card:hover{
+      transform:translateY(-3px);
+      box-shadow:0 52px 90px -46px rgba(0,0,0,0.98);
+    }
+    .prop{ transition:background .16s ease; }
+    .prop:hover{ background:var(--ink-2); }
+  }
+  /* keep the App Store button's hover lift disabled under reduced motion */
+  @media (prefers-reduced-motion: reduce){
     .appstore, .appstore:hover{ transition:none; transform:none; }
   }
 
